@@ -1,38 +1,65 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
+import Fab from '@mui/material/Fab';
+import Zoom from '@mui/material/Zoom';
 
 function CreateArea(props) {
-
   const [note, setNote] = useState({
-    title : "",
-    content : ""
+    title: "",
+    content: ""
   });
 
-  function handleChange(event){
-    const {name, value} = event.target;
+  const [expand, setExpand] = useState(false);
+
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+
     setNote(prevNote => {
       return {
         ...prevNote,
-        [name] : value
-      }
+        [name]: value
+      };
     });
   }
 
-  function submitNode(event){
-    const fun = props.onAdd;
-    fun(note);
+  function submitNote(event) {
+    props.onAdd(note);
     setNote({
-      title : "",
-      content : ""
-    })
+      title: "",
+      content: ""
+    });
     event.preventDefault();
+  }
+
+  function expandthearea(){
+    setExpand(true);
   }
 
   return (
     <div>
-      <form>
-        <input name="title" placeholder="Title" onChange={handleChange} value = {note.title} />
-        <textarea name="content" placeholder="Take a note..." rows="3" onChange={handleChange} value = {note.content} />
-        <button onClick={submitNode}> Add </button>
+      <form className="create-note">
+        <input
+          name="title"
+          onClick = {expandthearea}
+          onChange={handleChange}
+          value={note.title}
+          placeholder="Title" 
+        />
+        { expand ? <div>
+        <Zoom in={true}> 
+          <textarea
+            name="content"
+            onChange={handleChange}
+            value={note.content}
+            placeholder="Take a note..."
+            rows="3"
+          />
+        </Zoom> 
+        <Zoom in={true}>
+          <Fab onClick={submitNote}>+</Fab>
+        </Zoom> </div>
+        : null
+      }
       </form>
     </div>
   );
